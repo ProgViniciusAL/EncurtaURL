@@ -24,7 +24,7 @@ public class LinkController {
     private LinkService linkService;
 
     // Função para gerar URL encurtada
-    @PostMapping("/encurta-url")
+    @PostMapping("/short")
     public ResponseEntity<LinkResponse> generateShortUrl(@RequestBody LinkRequest request) {
         Link link = linkService.shorterLink(request.customAlias(), request.originalUrl());
 
