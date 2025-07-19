@@ -31,8 +31,8 @@ Este projeto é uma API REST desenvolvida com Spring Boot para encurtamento de U
 **Body JSON**:
 ```json
 {
-  "originalUrl": "https://www.google.com"
-  "customAlias": "Google",
+  "originalUrl": "https://www.google.com",
+  "customAlias": "Google"
 }
 ```
 **Resposta**:
@@ -44,12 +44,19 @@ Este projeto é uma API REST desenvolvida com Spring Boot para encurtamento de U
   "clickCount": 0,
   "longUrl": "https://www.google.com",
   "shortUrl": "abc123",
-  "redirectUrl": "http://localhost:8080/r/abc123"
-  "urlQrCode": "QR Code in progress",
+  "redirectUrl": "http://localhost:8080/r/abc123",
+  "urlQrCode": "QR Code em formato base64",
   "createdAt": "2025-07-12T13:15:00"
 }
 ```
 
+### Gerar QR Code da URL
+**GET** `/url/{id}/qrcode`
+
+**Resposta**:
+```
+Imagem do QR Code em formato PNG
+```
 ## Redirecionamento
 **GET** `/r/{shortUrl}`
 
@@ -73,4 +80,3 @@ bash ./mvnw test
 - Interface web para encurtar e visualizar estatísticas
 - Integração com Redis para cache de redirecionamentos
 - Autenticação via JWT para gestão privada de links
-- Geração de códigos QR referente aos links encurtados

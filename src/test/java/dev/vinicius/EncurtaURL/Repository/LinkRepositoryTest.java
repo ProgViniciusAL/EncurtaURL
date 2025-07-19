@@ -24,9 +24,6 @@ class LinkRepositoryTest {
     @Autowired
     LinkRepository linkRepository;
 
-    @Autowired
-    private QRCodeService qrCodeService;
-
     @Test
     @DisplayName("Should get Link successfully from DB")
     void findLinkByShortUrlCase1() {
