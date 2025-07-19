@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class LinkService {
@@ -26,10 +27,15 @@ public class LinkService {
     @Autowired
     private LinkRepository linkRepository;
 
+    @Autowired
+    private QRCodeService qrCodeService;
+
     //TODO: Incluir geração de QRCode futuramente
     public Link shorterLink(String alias, String originalUrl) {
         if(UrlValidation.isValidUrl(originalUrl)) {
-            LinkDTO data = new LinkDTO(alias, originalUrl, UrlCode.generate(), "QRCODE missing from now", LocalDateTime.now());
+            String shortCode = UrlCode.generate();
+
+            LinkDTO data = new LinkDTO(alias, originalUrl, shortCode, qrCodeService.generateQRCode("http://localhost:8080/r/" + shortCode), LocalDateTime.now());
             Link link = new Link(data);
             log.info("Created shorten link: {}", link);
 
@@ -50,6 +56,11 @@ public class LinkService {
         } catch (OriginalUrlException exception) {
             throw new OriginalUrlException("URL not found");
         }
+    }
+
+    public byte[] getQRCodeImage(UUID id) {
+        Link link = linkRepository.findById(id).orElseThrow(() -> new RuntimeException("Link not found"));
+        return link.getUrlQrCode();
     }
 
     public Link updateLink(Link link) {

@@ -25,7 +25,7 @@ public class Link {
     private Integer clickCount = 0;
     private String longUrl;
     private String shortUrl;
-    private String urlQrCode;
+    private byte[] urlQrCode;
     private LocalDateTime createdAt;
 
     public Link(LinkDTO linkDTO) {

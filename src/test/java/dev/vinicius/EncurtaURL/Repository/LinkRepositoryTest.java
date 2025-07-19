@@ -1,7 +1,9 @@
 package dev.vinicius.EncurtaURL.Repository;
 
+import com.google.zxing.qrcode.encoder.QRCode;
 import dev.vinicius.EncurtaURL.Model.Links.Link;
 import dev.vinicius.EncurtaURL.Model.Links.LinkDTO;
+import dev.vinicius.EncurtaURL.Service.QRCodeService;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,11 +24,17 @@ class LinkRepositoryTest {
     @Autowired
     LinkRepository linkRepository;
 
+    @Autowired
+    private QRCodeService qrCodeService;
+
     @Test
     @DisplayName("Should get Link successfully from DB")
     void findLinkByShortUrlCase1() {
         String shortUrl = "AJFG2";
-        LinkDTO data = new LinkDTO("Google", "https://google.com", shortUrl, "QR Code in progress", LocalDateTime.now());
+        String url = "https://google.com";
+        byte[] fakeQR = new byte[] {1, 2, 3};
+
+        LinkDTO data = new LinkDTO("Google", url, shortUrl, null, LocalDateTime.now());
         this.createLink(data);
 
         Optional<Link> foundedLink = this.linkRepository.findByShortUrl(data.shortUrl());

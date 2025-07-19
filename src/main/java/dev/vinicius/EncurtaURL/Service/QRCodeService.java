@@ -5,6 +5,10 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import dev.vinicius.EncurtaURL.Exceptions.QRCodeGenerateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactoryFriend;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -15,9 +19,14 @@ import java.io.IOException;
 @Service
 public class QRCodeService {
 
-    public byte[] generateQRCode(String url, Integer width, Integer height) {
+    private static final Logger log = LoggerFactory.getLogger(QRCodeService.class);
+
+    public byte[] generateQRCode(String url) {
 
         try {
+            int width = 600;
+            int height = 600;
+
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
             BitMatrix bitMatrix = qrCodeWriter.encode(url, BarcodeFormat.QR_CODE, width, height);
 
@@ -26,11 +35,12 @@ public class QRCodeService {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ImageIO.write(image, "PNG", byteArrayOutputStream);
 
+            log.info("Created QR Code: {}", byteArrayOutputStream);
+
             return byteArrayOutputStream.toByteArray();
         } catch(WriterException | IOException exception) {
-            System.out.println(exception.getMessage());
+            throw new QRCodeGenerateException("Error in QR Code generation: " + exception.getMessage());
         }
-
 
     }
 

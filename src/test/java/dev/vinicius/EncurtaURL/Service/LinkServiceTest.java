@@ -7,9 +7,12 @@ import dev.vinicius.EncurtaURL.Utils.UrlCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +30,8 @@ class LinkServiceTest {
 
     @Mock
     private LinkRepository linkRepository;
-
+    @Mock
+    private QRCodeService qrCodeService;
     @InjectMocks
     private LinkService linkService;
 
@@ -43,8 +47,9 @@ class LinkServiceTest {
         String name = "Google";
         String url = "https://google.com";
         String shortCode = UrlCode.generate();
+        byte[] fakeQR = new byte[]{1, 2, 3};
 
-        Link expectedLink = new Link(UUID.randomUUID(), name, 0, url, shortCode, "QR Code in progress", LocalDateTime.now());
+        Link expectedLink = new Link(UUID.randomUUID(), name, 0, url, shortCode, fakeQR, LocalDateTime.now());
         when(linkRepository.save(any(Link.class))).thenReturn(expectedLink);
 
         Link result = linkService.shorterLink(name, url);
@@ -56,6 +61,7 @@ class LinkServiceTest {
         assertEquals(shortCode, result.getShortUrl());
         assertEquals(0, result.getClickCount());
         assertNotNull(result.getShortUrl());
+        assertNotNull(result.getUrlQrCode());
         verify(linkRepository, times(1)).save(any(Link.class));
 
     }
