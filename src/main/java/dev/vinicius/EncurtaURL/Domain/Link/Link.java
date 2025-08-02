@@ -25,7 +25,7 @@ public class Link {
     private UUID id;
 
     private String alias;
-    private Integer clickCount = 0;
+    private int clickCount = 0;
     private String longUrl;
     private String shortUrl;
     private String shortCode;
@@ -46,9 +46,9 @@ public class Link {
         this.QRCode = linkDTO.urlQrCode();
     }
 
-    public Link(UUID uuid, String name, int i, String longUrl, String shortUrl, String shortCode, byte[] fakeQR, LocalDateTime now) {
+    public Link(UUID uuid, String name, int clickCount, String longUrl, String shortUrl, String shortCode, byte[] fakeQR, LocalDateTime now) {
         this.alias = name;
-        this.clickCount = i;
+        this.clickCount = clickCount;
         this.longUrl = longUrl;
         this.shortCode = shortCode;
         this.shortUrl = shortUrl;
