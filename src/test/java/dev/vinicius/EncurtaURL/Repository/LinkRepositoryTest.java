@@ -1,9 +1,7 @@
 package dev.vinicius.EncurtaURL.Repository;
 
-import com.google.zxing.qrcode.encoder.QRCode;
-import dev.vinicius.EncurtaURL.Model.Links.Link;
-import dev.vinicius.EncurtaURL.Model.Links.LinkDTO;
-import dev.vinicius.EncurtaURL.Service.QRCodeService;
+import dev.vinicius.EncurtaURL.Domain.Link.Link;
+import dev.vinicius.EncurtaURL.Domain.Link.dto.LinkDTO;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,22 +1,16 @@
 package dev.vinicius.EncurtaURL.Service;
 
+import dev.vinicius.EncurtaURL.Domain.User.User;
 import dev.vinicius.EncurtaURL.Exceptions.InvalidUrlException;
-import dev.vinicius.EncurtaURL.Model.Links.Link;
+import dev.vinicius.EncurtaURL.Domain.Link.Link;
 import dev.vinicius.EncurtaURL.Repository.LinkRepository;
 import dev.vinicius.EncurtaURL.Utils.UrlCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -45,23 +39,25 @@ class LinkServiceTest {
     void shortUrlCase1() {
 
         String name = "Google";
-        String url = "https://google.com";
+        String longUrl = "https://google.com";
+
         String shortCode = UrlCode.generate();
+        String shortUrl = "https://localhost:8080/r/" + shortCode;
         byte[] fakeQR = new byte[]{1, 2, 3};
 
-        Link expectedLink = new Link(UUID.randomUUID(), name, 0, url, shortCode, fakeQR, LocalDateTime.now());
+        Link expectedLink = new Link(UUID.randomUUID(), name, 0, longUrl, shortUrl, shortCode, fakeQR, LocalDateTime.now());
         when(linkRepository.save(any(Link.class))).thenReturn(expectedLink);
 
-        Link result = linkService.shorterLink(name, url);
+        Link result = linkService.shorterLink(name, longUrl);
 
         assertNotNull(result);
         assertNotNull(result.getId());
-        assertEquals(name, result.getCustomAlias());
-        assertEquals(url, result.getLongUrl());
-        assertEquals(shortCode, result.getShortUrl());
+        assertEquals(name, result.getAlias());
+        assertEquals(longUrl, result.getLongUrl());
+        assertEquals(shortCode, result.getShortCode());
         assertEquals(0, result.getClickCount());
-        assertNotNull(result.getShortUrl());
-        assertNotNull(result.getUrlQrCode());
+        assertNotNull(result.getShortCode());
+        assertNotNull(result.getQRCode());
         verify(linkRepository, times(1)).save(any(Link.class));
 
     }

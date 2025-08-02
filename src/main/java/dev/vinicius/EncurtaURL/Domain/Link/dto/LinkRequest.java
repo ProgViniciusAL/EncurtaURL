@@ -1,4 +1,4 @@
-package dev.vinicius.EncurtaURL.Model.Links;
+package dev.vinicius.EncurtaURL.Domain.Link.dto;
 
 import java.util.Map;
 
@@ -7,7 +7,7 @@ public record LinkRequest(String originalUrl, String customAlias) {
     public LinkRequest(Map<String, String> map) {
         this(
                 map.getOrDefault("originalUrl", null),
-                map.getOrDefault("customAlias", null)
+                map.getOrDefault("alias", null)
         );
     }
 
