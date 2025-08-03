@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin(origins = "https://preview-encurta-url-design-kzmpmj1hsx8t654p8wmu.vusercontent.net/")
 public class LinkController {
 
     @Autowired
