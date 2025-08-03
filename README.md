@@ -12,6 +12,7 @@ Este projeto é uma API REST desenvolvida com Spring Boot para encurtamento de U
 - Geração de QR Code para URLs (em desenvolvimento)
 - Testes unitários com JUnit e Mockito
 - Integração com banco de dados via Spring Data JPA
+- Integração com Docker para hospedagem com uma imagem pública (Docker Hub)
 
 ## Tecnologias utilizadas
 
@@ -22,6 +23,7 @@ Este projeto é uma API REST desenvolvida com Spring Boot para encurtamento de U
 - PostgreSQL e H2 para testes locais
 - ZXing (geração de QR Codes)
 - JUnit 5 / Mockito
+- Docker
 
 ## Hospedagem
 #### API: (Render) https://encurta-url-image-1-0.onrender.com
