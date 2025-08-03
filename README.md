@@ -31,6 +31,46 @@ Este projeto é uma API REST desenvolvida com Spring Boot para encurtamento de U
 
 ## Endpoints principais
 
+### Registro de usuário
+**POST** `/auth/register`
+
+**Body JSON**
+```json
+{
+  "username": "string",
+  "password": "string",
+  "email": "string",
+  "role": "string" (USER por padrão)
+}
+```
+**Resposta**:
+
+```json
+{
+  "username": "string",
+  "email": "string"
+}
+```
+
+### Login de usuário
+
+**POST** `/auth/login`
+
+**Body JSON**
+```json
+{
+  "password": "string",
+  "email": "string"
+}
+```
+**Resposta**:
+
+```json
+{
+  "token": "string"
+}
+```
+
 ### Encurtar URL
 **POST** `/short`
 
