@@ -46,7 +46,7 @@ public class LinkController {
         return ResponseEntity.status(HttpStatus.OK).body(linksList);
     }
 
-    @GetMapping("/url/{id}/qrcode")
+    @GetMapping("/links/{id}/qrcode")
     public ResponseEntity<byte[]> getQRCodeImage(@PathVariable UUID id) {
         byte[] imageBytes = linkService.getQRCodeImage(id);
 

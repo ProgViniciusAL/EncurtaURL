@@ -6,11 +6,13 @@ import dev.vinicius.EncurtaURL.Exceptions.OriginalUrlException;
 import dev.vinicius.EncurtaURL.Domain.Link.Link;
 import dev.vinicius.EncurtaURL.Domain.Link.dto.LinkDTO;
 import dev.vinicius.EncurtaURL.Repository.LinkRepository;
+import dev.vinicius.EncurtaURL.Repository.UserRepository;
 import dev.vinicius.EncurtaURL.Utils.UrlCode;
 import dev.vinicius.EncurtaURL.Utils.UrlValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -29,25 +31,30 @@ public class LinkService {
     @Autowired
     private QRCodeService qrCodeService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public Link shorterLink(String alias, String originalUrl) {
         if(!UrlValidation.isValidUrl(originalUrl)) {
             throw new InvalidUrlException("Invalid URL");
         }
         String shortCode = UrlCode.generate();
 
-        User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByEmail(auth.getName()).orElse(null);
 
         LinkDTO data = new LinkDTO(alias, originalUrl, shortCode, qrCodeService.generateQRCode("/r/" + shortCode), LocalDateTime.now());
         Link link = new Link(data);
-        link.setUser(authenticatedUser);
+        link.setUser(user);
         log.info("Created shorten link: {}", link);
 
         return linkRepository.save(link);
     }
 
     public List<Link> getAllUrls() {
-        User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return linkRepository.findAllByUserId(authenticatedUser.getId());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByEmail(auth.getName()).orElse(null);
+        return linkRepository.findAllByUserId(user.getId());
     }
 
     public Link getOriginalUrl(String shortUrl) {

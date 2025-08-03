@@ -22,6 +22,10 @@ public class Role {
     @Enumerated(EnumType.STRING)
     private RoleName name;
 
+    public Role(RoleName roleUser) {
+        this.name = roleUser;
+    }
+
     public String getRoleName() {
         return name.toString();
     }

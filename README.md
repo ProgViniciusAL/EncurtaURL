@@ -23,6 +23,10 @@ Este projeto é uma API REST desenvolvida com Spring Boot para encurtamento de U
 - ZXing (geração de QR Codes)
 - JUnit 5 / Mockito
 
+## Hospedagem
+#### API: (Render) https://encurta-url-image-1-0.onrender.com
+#### Banco de dados: Aiven.io
+
 ## Endpoints principais
 
 ### Encurtar URL
@@ -57,6 +61,28 @@ Este projeto é uma API REST desenvolvida com Spring Boot para encurtamento de U
 ```
 Imagem do QR Code em formato PNG
 ```
+
+### Recuperar URL's  do usuário
+**GET** `/links`
+
+**Resposta**:
+```json
+[
+  {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "alias": "string",
+    "clickCount": 0,
+    "longUrl": "string",
+    "shortUrl": "string",
+    "shortCode": "string",
+    "QRCode": [
+      "string"
+    ],
+    "createdAt": "2025-08-03T23:08:28.785Z"
+  }
+]
+```
+
 ## Redirecionamento
 **GET** `/r/{shortUrl}`
 
@@ -79,4 +105,3 @@ bash ./mvnw test
 - Expiração de links
 - Interface web para encurtar e visualizar estatísticas
 - Integração com Redis para cache de redirecionamentos
-- Autenticação via JWT para gestão privada de links
