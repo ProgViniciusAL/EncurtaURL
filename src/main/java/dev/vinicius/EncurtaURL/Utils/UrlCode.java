@@ -1,6 +1,5 @@
 package dev.vinicius.EncurtaURL.Utils;
 
-import dev.vinicius.EncurtaURL.Service.LinkService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

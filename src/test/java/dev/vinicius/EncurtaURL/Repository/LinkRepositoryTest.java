@@ -1,7 +1,8 @@
 package dev.vinicius.EncurtaURL.Repository;
 
-import dev.vinicius.EncurtaURL.Domain.Link.Link;
-import dev.vinicius.EncurtaURL.Domain.Link.dto.LinkDTO;
+import dev.vinicius.EncurtaURL.adapter.out.repository.LinkRepository;
+import dev.vinicius.EncurtaURL.domain.model.Link.Link;
+import dev.vinicius.EncurtaURL.domain.model.Link.dto.LinkDTO;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

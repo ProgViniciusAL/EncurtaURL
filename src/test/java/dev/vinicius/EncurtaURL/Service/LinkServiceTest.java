@@ -1,14 +1,16 @@
 package dev.vinicius.EncurtaURL.Service;
 
-import dev.vinicius.EncurtaURL.Domain.Enum.RoleName;
-import dev.vinicius.EncurtaURL.Domain.Role.Role;
-import dev.vinicius.EncurtaURL.Domain.User.User;
-import dev.vinicius.EncurtaURL.Exceptions.InvalidUrlException;
-import dev.vinicius.EncurtaURL.Domain.Link.Link;
-import dev.vinicius.EncurtaURL.Repository.LinkRepository;
-import dev.vinicius.EncurtaURL.Repository.UserRepository;
+import dev.vinicius.EncurtaURL.application.service.LinkService;
+import dev.vinicius.EncurtaURL.application.service.QRCodeService;
+import dev.vinicius.EncurtaURL.domain.model.Enum.RoleName;
+import dev.vinicius.EncurtaURL.domain.model.Role.Role;
+import dev.vinicius.EncurtaURL.domain.model.User.User;
+import dev.vinicius.EncurtaURL.domain.exception.InvalidUrlException;
+import dev.vinicius.EncurtaURL.domain.model.Link.Link;
+import dev.vinicius.EncurtaURL.adapter.out.repository.LinkRepository;
+import dev.vinicius.EncurtaURL.adapter.out.repository.UserRepository;
 import dev.vinicius.EncurtaURL.Utils.UrlCode;
-import dev.vinicius.EncurtaURL.infra.security.auth.UserDetailsImpl;
+import dev.vinicius.EncurtaURL.adapter.out.security.auth.UserDetailsImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +20,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.*;
