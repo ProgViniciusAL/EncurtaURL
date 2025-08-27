@@ -11,4 +11,13 @@ public record LinkRequest(String originalUrl, String customAlias) {
         );
     }
 
+    @Override
+    public String originalUrl() {
+        return originalUrl;
+    }
+
+    @Override
+    public String customAlias() {
+        return customAlias;
+    }
 }

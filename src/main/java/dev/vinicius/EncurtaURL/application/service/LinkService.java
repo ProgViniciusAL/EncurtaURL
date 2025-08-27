@@ -1,6 +1,8 @@
 package dev.vinicius.EncurtaURL.application.service;
 
+import dev.vinicius.EncurtaURL.adapter.out.security.auth.AuthenticatedUserProvider;
 import dev.vinicius.EncurtaURL.application.mapper.ObjectMapper;
+import dev.vinicius.EncurtaURL.domain.model.Link.dto.LinkRequest;
 import dev.vinicius.EncurtaURL.domain.model.User.User;
 import dev.vinicius.EncurtaURL.domain.exception.InvalidUrlException;
 import dev.vinicius.EncurtaURL.domain.exception.OriginalUrlException;
@@ -13,6 +15,7 @@ import dev.vinicius.EncurtaURL.Utils.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,9 @@ public class LinkService {
 
     private static final Pattern ALIAS_PATTERN = Pattern.compile("^[a-zA-Z0-9-]+$");
 
+    @Value("${host.info.url}")
+    private String hostname;
+
     @Autowired
     private LinkRepository linkRepository;
 
@@ -36,26 +42,30 @@ public class LinkService {
     private QRCodeService qrCodeService;
 
     @Autowired
+    private AuthenticatedUserProvider authenticatedUserProvider;
+
+    @Autowired
     private UserRepository userRepository;
 
-    public LinkDTO shorterLink(String alias, String originalUrl) {
-        if(!Validator.isValidUrl(originalUrl) && !Validator.isValidAlias(alias)) {
+    public LinkDTO shorterLink(LinkRequest request) {
+        if(!Validator.isValidUrl(request.originalUrl()) && !Validator.isValidAlias(request.customAlias())) {
             throw new InvalidUrlException("Invalid URL");
         }
+
+        Link createdLink = new Link();
+        createdLink.setLongUrl(request.originalUrl());
+        createdLink.setAlias(request.customAlias());
+        createdLink.setUser(authenticatedUserProvider.getUser());
+
         String shortCode = UrlCode.generate();
+        createdLink.setShortUrl(hostname + "/r/" + shortCode);
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(auth.getName()).orElse(null);
+        log.info("Created shorten link: {}", createdLink);
 
-        Link link = new Link(null, alias, 0, originalUrl, "http://localhost:8080/r/" + shortCode, shortCode, qrCodeService.generateQRCode("/r/" + shortCode), LocalDateTime.now());
-        link.setUser(user);
-
-        log.info("Created shorten link: {}", link);
-
-        return ObjectMapper.parseObject(linkRepository.save(link),  LinkDTO.class);
+        return ObjectMapper.parseObject(linkRepository.save(createdLink),  LinkDTO.class);
     }
 
-    public List<Link> getAllUrls() {
+    public List<Link> findAll() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmail(auth.getName())
                 .orElseThrow(() -> new RuntimeException("Usuário não autenticado ou não encontrado no banco"));

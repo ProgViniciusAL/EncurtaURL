@@ -3,10 +3,7 @@ package dev.vinicius.EncurtaURL.domain.model.Link;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.vinicius.EncurtaURL.domain.model.User.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,7 +11,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "users_links")
 @AllArgsConstructor
-@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 @Getter
 @Setter
 public class Link {
@@ -27,7 +25,6 @@ public class Link {
     private int clickCount = 0;
     private String longUrl;
     private String shortUrl;
-    private String shortCode;
     private byte[] QRCode;
 
     @JsonIgnore
@@ -36,29 +33,12 @@ public class Link {
 
     private LocalDateTime createdAt;
 
-    public Link(UUID uuid, String name, int clickCount, String longUrl, String shortUrl, String shortCode, byte[] qrCode, LocalDateTime createdAt) {
-        this.alias = name;
-        this.clickCount = clickCount;
-        this.longUrl = longUrl;
-        this.shortCode = shortCode;
-        this.shortUrl = shortUrl;
-        this.createdAt = createdAt;
-        this.QRCode = qrCode;
+    public Link() {
+        this.setCreatedAt(LocalDateTime.now());
     }
 
     public void registerClick() {
         this.clickCount++;
-    }
-
-    @Override
-    public String toString() {
-        return "Link{" +
-                "id=" + id +
-                ", longUrl='" + longUrl + '\'' +
-                ", shortCode='" + shortCode + '\'' +
-                ", QRCode='" + QRCode + '\'' +
-                ", createdAt=" + createdAt +
-                '}';
     }
 
 }

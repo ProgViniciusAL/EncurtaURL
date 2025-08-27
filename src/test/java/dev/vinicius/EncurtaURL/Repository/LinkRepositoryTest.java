@@ -1,6 +1,7 @@
 package dev.vinicius.EncurtaURL.Repository;
 
 import dev.vinicius.EncurtaURL.adapter.out.repository.LinkRepository;
+import dev.vinicius.EncurtaURL.application.mapper.ObjectMapper;
 import dev.vinicius.EncurtaURL.domain.model.Link.Link;
 import dev.vinicius.EncurtaURL.domain.model.Link.dto.LinkDTO;
 import jakarta.persistence.EntityManager;
@@ -26,14 +27,14 @@ class LinkRepositoryTest {
     @Test
     @DisplayName("Should get Link successfully from DB")
     void findLinkByShortUrlCase1() {
-        String shortUrl = "AJFG2";
-        String url = "https://google.com";
-        byte[] fakeQR = new byte[] {1, 2, 3};
+        LinkDTO link = new LinkDTO();
+        link.setAlias("Google");
+        link.setLongUrl("https://google.com");
+        link.setShortUrl("http:localhost:8080/r/AJFG2");
 
-        LinkDTO data = new LinkDTO("Google", url, shortUrl, null, LocalDateTime.now());
-        this.createLink(data);
+        this.createLink(link);
 
-        Optional<Link> foundedLink = this.linkRepository.findByShortUrl(data.shortUrl());
+        Optional<Link> foundedLink = this.linkRepository.findByShortUrl(link.getShortUrl());
 
         assertThat(foundedLink.isPresent()).isTrue();
     }
@@ -49,10 +50,10 @@ class LinkRepositoryTest {
 
     private Link createLink(LinkDTO linkDTO) {
 
-        Link newLink = new Link(linkDTO);
+        Link createdLink = ObjectMapper.parseObject(linkDTO, Link.class);
 
-        this.entityManager.persist(newLink);
-        return newLink;
+        this.entityManager.persist(createdLink);
+        return createdLink;
     }
 
 }
