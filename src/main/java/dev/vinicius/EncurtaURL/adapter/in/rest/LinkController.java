@@ -40,10 +40,9 @@ public class LinkController implements LinkControllerDocs {
             produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE
     )
     @Override
-    public ResponseEntity<LinkResponse> generateShortUrl(@RequestBody LinkRequest request) {
+    public ResponseEntity<LinkDTO> generateShortUrl(@RequestBody LinkRequest request) {
         LinkDTO generatedLink = linkService.shorterLink(request);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(ObjectMapper.parseObject(generatedLink, LinkResponse.class));
+        return ResponseEntity.status(HttpStatus.CREATED).body(generatedLink);
     }
 
     // Função para listar URL's
@@ -68,7 +67,6 @@ public class LinkController implements LinkControllerDocs {
                 .body(imageBytes);
     }
 
-    // Função para redirecionar usuário para URL original através da URL curta
     @GetMapping("/r/{shortCode}")
     @Override
     public void redirectLink(@PathVariable String shortCode, HttpServletResponse response) throws IOException {

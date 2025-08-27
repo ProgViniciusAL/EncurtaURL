@@ -76,7 +76,7 @@ public class LinkService {
     public Link getOriginalUrl(String shortUrl) {
         try {
             log.info("Searching original URL by the shorten URL.");
-            return linkRepository.findByShortUrl(shortUrl).orElseThrow(() -> new OriginalUrlException("URL not found in repository"));
+            return linkRepository.findByShortUrl(hostname + "/r/" + shortUrl).orElseThrow(() -> new OriginalUrlException("URL not found in repository"));
         } catch (OriginalUrlException exception) {
             throw new OriginalUrlException("URL not found");
         }
@@ -84,6 +84,7 @@ public class LinkService {
 
     public byte[] getQRCodeImage(UUID id) {
         Link link = linkRepository.findById(id).orElseThrow(() -> new RuntimeException("Link not found"));
+        link.setQRCode(qrCodeService.generateQRCode(link.getShortUrl()));
         return link.getQRCode();
     }
 

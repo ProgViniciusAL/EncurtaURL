@@ -1,6 +1,7 @@
 package dev.vinicius.EncurtaURL.adapter.in.rest.docs;
 
 import dev.vinicius.EncurtaURL.domain.model.Link.Link;
+import dev.vinicius.EncurtaURL.domain.model.Link.dto.LinkDTO;
 import dev.vinicius.EncurtaURL.domain.model.Link.dto.LinkRequest;
 import dev.vinicius.EncurtaURL.domain.model.Link.dto.LinkResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,11 +42,11 @@ public interface LinkControllerDocs {
                     @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
             }
     )
-    ResponseEntity<LinkResponse> generateShortUrl(@RequestBody LinkRequest request);
+    ResponseEntity<LinkDTO> generateShortUrl(@RequestBody LinkRequest request);
 
     @Operation(
-            description = "Endpoint encurtamento de URL",
-            summary = "Encurta a URL, gera entidade de Link e armazena em banco de dados",
+            description = "Find All Links",
+            summary = "Retorna todos os links associados ao usuários autenticado",
             tags = {"Link"},
             responses = {
                     @ApiResponse(
@@ -60,8 +61,8 @@ public interface LinkControllerDocs {
     ResponseEntity<List<Link>> getLinks();
 
     @Operation(
-            description = "Endpoint encurtamento de URL",
-            summary = "Encurta a URL, gera entidade de Link e armazena em banco de dados",
+            description = "Gerador de QR Code",
+            summary = "Gera QR Code com a URL associada a uma entidade de Link",
             tags = {"Link"},
             responses = {
                     @ApiResponse(
@@ -76,8 +77,8 @@ public interface LinkControllerDocs {
     ResponseEntity<byte[]> getQRCodeImage(@PathVariable UUID id);
 
     @Operation(
-            description = "Endpoint encurtamento de URL",
-            summary = "Encurta a URL, gera entidade de Link e armazena em banco de dados",
+            description = "Endpoint de redirecionamento",
+            summary = "Redireciona usuário do link encurtado para o link original utilizando o código de URL curta",
             tags = {"Link"},
             responses = {
                     @ApiResponse(

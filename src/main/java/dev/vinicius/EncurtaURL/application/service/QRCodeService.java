@@ -23,6 +23,9 @@ public class QRCodeService {
     public byte[] generateQRCode(String url) {
 
         try {
+
+            log.info("Creating QR Code of: {}", url);
+
             int width = 600;
             int height = 600;
 
