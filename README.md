@@ -40,7 +40,6 @@ Este projeto é uma API REST desenvolvida com Spring Boot para encurtamento de U
   "username": "string",
   "password": "string",
   "email": "string",
-  "role": "string" (USER por padrão)
 }
 ```
 **Resposta**:
