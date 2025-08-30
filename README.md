@@ -1,3 +1,6 @@
+<img width="1018" height="525" alt="image" src="https://github.com/user-attachments/assets/d1088934-6d50-4f96-91eb-7880dbc7ce48" />
+( Imagem do front-end em desenvolvimento )
+
 # Encurtador de URL - Spring Boot
 
 Este projeto é uma API REST desenvolvida com Spring Boot para encurtamento de URLs. Ela permite transformar URLs longas em versões curtas, rastrear acessos e gerar QR Codes a partir dos links encurtados.
