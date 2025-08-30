@@ -59,7 +59,7 @@ public class User {
         this.password = passwordEncoder.encode(userRequestDTO.password());
         this.email = userRequestDTO.email();
         this.links = new ArrayList<>();
-        this.roles = Collections.singletonList(new Role(RoleName.ROLE_ADMIN));
+        this.roles = Collections.singletonList(new Role(RoleName.ROLE_CUSTOMER));
     }
 
 }
