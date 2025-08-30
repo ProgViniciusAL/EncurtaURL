@@ -1,4 +1,4 @@
-package dev.vinicius.EncurtaURL.domain.model.Enum;
+package dev.vinicius.EncurtaURL.domain.model.enums;
 
 public enum RoleName {
 

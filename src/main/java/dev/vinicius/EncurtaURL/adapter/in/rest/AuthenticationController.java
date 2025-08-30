@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-public class AuthenticationController {
+public class AuthenticationController implements dev.vinicius.EncurtaURL.adapter.in.rest.docs.AuthenticationControllerDocs {
 
     @Autowired
     private AuthService authService;
@@ -25,6 +25,7 @@ public class AuthenticationController {
     private UserService userService;
 
     @PostMapping("/login")
+    @Override
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginDTO loginDTO) {
 
         log.info("Login Request: {}", loginDTO);
@@ -35,6 +36,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
+    @Override
     public ResponseEntity<RegisterResponseDTO> register(@RequestBody UserRequestDTO userRequestDTO) {
 
         log.info("Register Request: {}", userRequestDTO);

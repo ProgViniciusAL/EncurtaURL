@@ -1,7 +1,7 @@
 package dev.vinicius.EncurtaURL.adapter.out.security.auth;
 
 import dev.vinicius.EncurtaURL.domain.model.User.User;
-import dev.vinicius.EncurtaURL.adapter.out.repository.UserRepository;
+import dev.vinicius.EncurtaURL.adapter.out.repository.SpringDataUserRepository;
 import dev.vinicius.EncurtaURL.adapter.out.security.jwt.JwtTokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,7 +23,7 @@ import java.io.IOException;
 public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
-    private UserRepository userRepository;
+    private SpringDataUserRepository springDataUserRepository;
 
     @Autowired
     private JwtTokenService jwtTokenService;
@@ -38,12 +38,14 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = jwtTokenService.recoverToken(request);
-        log.info("Token: {}", token);
 
         if(token != null) {
             try {
+
+                log.debug("Token: {}", token);
+
                 String subject = jwtTokenService.getSubjectFromToken(token);
-                User user = userRepository.findByEmail(subject).orElseThrow(() -> new UsernameNotFoundException(subject));
+                User user = springDataUserRepository.findByEmail(subject).orElseThrow(() -> new UsernameNotFoundException(subject));
                 UserDetailsImpl userDetailsImpl = new UserDetailsImpl(user);
 
                 Authentication authentication = new UsernamePasswordAuthenticationToken(userDetailsImpl, null, userDetailsImpl.getAuthorities());

@@ -1,15 +1,19 @@
-package dev.vinicius.EncurtaURL.Utils;
+package dev.vinicius.EncurtaURL.domain.model.VO;
 
-import org.apache.commons.lang3.RandomStringUtils;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.text.RandomStringGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UrlCode {
+@Getter @Setter
+public class ShortCode {
 
-    private static final Logger log = LoggerFactory.getLogger(UrlCode.class);
+    public String value;
 
-    public static String generate() {
+    private static final Logger log = LoggerFactory.getLogger(ShortCode.class);
+
+    public String generate() {
         log.info("Generating random URL for shorten process.");
 
         RandomStringGenerator generator = new RandomStringGenerator.Builder()
@@ -17,7 +21,9 @@ public class UrlCode {
                 .filteredBy(Character::isLetterOrDigit)
                 .get();
 
-        return generator.generate(5, 10);
+        this.setValue(generator.generate(5, 5));
+
+        return value;
     }
 
 }

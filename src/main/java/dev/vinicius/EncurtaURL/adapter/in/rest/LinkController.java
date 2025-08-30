@@ -1,16 +1,11 @@
 package dev.vinicius.EncurtaURL.adapter.in.rest;
 
 import dev.vinicius.EncurtaURL.adapter.in.rest.docs.LinkControllerDocs;
-import dev.vinicius.EncurtaURL.application.mapper.ObjectMapper;
 import dev.vinicius.EncurtaURL.domain.model.Link.Link;
 import dev.vinicius.EncurtaURL.domain.model.Link.dto.LinkDTO;
 import dev.vinicius.EncurtaURL.domain.model.Link.dto.LinkRequest;
-import dev.vinicius.EncurtaURL.domain.model.Link.dto.LinkResponse;
 import dev.vinicius.EncurtaURL.application.service.LinkService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import dev.vinicius.EncurtaURL.domain.model.VO.Url;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,8 +65,8 @@ public class LinkController implements LinkControllerDocs {
     @GetMapping("/r/{shortCode}")
     @Override
     public void redirectLink(@PathVariable String shortCode, HttpServletResponse response) throws IOException {
-
-        Link link = linkService.getOriginalUrl(shortCode);
+        Url redirectUrl = new Url(hostname + "/r/" + shortCode);
+        Link link = linkService.getOriginalUrl(redirectUrl);
 
         if (link != null) {
             response.sendRedirect(link.getLongUrl());
@@ -80,7 +75,6 @@ public class LinkController implements LinkControllerDocs {
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
-
     }
 
 }

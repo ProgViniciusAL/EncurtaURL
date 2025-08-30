@@ -12,43 +12,4 @@ public record LinkResponse(UUID id,
                            byte[] urlQrCode,
                            LocalDateTime createdAt) {
 
-    @Override
-    public UUID id() {
-        return id;
-    }
-
-    @Override
-    public String customAlias() {
-        return customAlias;
-    }
-
-    @Override
-    public Integer clickCount() {
-        return clickCount;
-    }
-
-    @Override
-    public String longUrl() {
-        return longUrl;
-    }
-
-    @Override
-    public String shortUrl() {
-        return shortUrl;
-    }
-
-    @Override
-    public String redirectUrl() {
-        return redirectUrl;
-    }
-
-    @Override
-    public byte[] urlQrCode() {
-        return urlQrCode;
-    }
-
-    @Override
-    public LocalDateTime createdAt() {
-        return createdAt;
-    }
 }

@@ -4,14 +4,13 @@ import dev.vinicius.EncurtaURL.adapter.out.security.auth.AuthenticatedUserProvid
 import dev.vinicius.EncurtaURL.application.mapper.ObjectMapper;
 import dev.vinicius.EncurtaURL.domain.model.Link.dto.LinkRequest;
 import dev.vinicius.EncurtaURL.domain.model.User.User;
-import dev.vinicius.EncurtaURL.domain.exception.InvalidUrlException;
 import dev.vinicius.EncurtaURL.domain.exception.OriginalUrlException;
 import dev.vinicius.EncurtaURL.domain.model.Link.Link;
 import dev.vinicius.EncurtaURL.domain.model.Link.dto.LinkDTO;
-import dev.vinicius.EncurtaURL.adapter.out.repository.LinkRepository;
-import dev.vinicius.EncurtaURL.adapter.out.repository.UserRepository;
-import dev.vinicius.EncurtaURL.Utils.UrlCode;
-import dev.vinicius.EncurtaURL.Utils.Validator;
+import dev.vinicius.EncurtaURL.adapter.out.repository.SpringDataUserRepository;
+import dev.vinicius.EncurtaURL.domain.model.VO.ShortCode;
+import dev.vinicius.EncurtaURL.domain.model.VO.Url;
+import dev.vinicius.EncurtaURL.domain.port.LinkRepositoryPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -36,7 +34,10 @@ public class LinkService {
     private String hostname;
 
     @Autowired
-    private LinkRepository linkRepository;
+    private LinkRepositoryPort linkRepositoryPort;
+
+    @Autowired
+    private SpringDataUserRepository springDataUserRepository;
 
     @Autowired
     private QRCodeService qrCodeService;
@@ -44,58 +45,55 @@ public class LinkService {
     @Autowired
     private AuthenticatedUserProvider authenticatedUserProvider;
 
-    @Autowired
-    private UserRepository userRepository;
-
     public LinkDTO shorterLink(LinkRequest request) {
-        if(!Validator.isValidUrl(request.originalUrl()) && !Validator.isValidAlias(request.customAlias())) {
-            throw new InvalidUrlException("Invalid URL");
-        }
 
         Link createdLink = new Link();
-        createdLink.setLongUrl(request.originalUrl());
+        createdLink.setLongUrl(new Url(request.originalUrl()));
         createdLink.setAlias(request.customAlias());
         createdLink.setUser(authenticatedUserProvider.getUser());
 
-        String shortCode = UrlCode.generate();
-        createdLink.setShortUrl(hostname + "/r/" + shortCode);
+        ShortCode code = new ShortCode();
+        Url shortUrl = new Url(hostname + "/r/" + code.generate());
+
+        createdLink.setShortUrl(shortUrl);
 
         log.info("Created shorten link: {}", createdLink);
 
-        return ObjectMapper.parseObject(linkRepository.save(createdLink),  LinkDTO.class);
+        return ObjectMapper.parseObject(linkRepositoryPort.save(createdLink), LinkDTO.class);
     }
 
     public List<Link> findAll() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(auth.getName())
+        User user = springDataUserRepository.findByEmail(auth.getName())
                 .orElseThrow(() -> new RuntimeException("Usuário não autenticado ou não encontrado no banco"));
 
-        return linkRepository.findAllByUserId(user.getId());
+        return linkRepositoryPort.findAllByUserId(user.getId());
     }
 
-    public Link getOriginalUrl(String shortUrl) {
+    public Link getOriginalUrl(Url shortUrl) {
         try {
-            log.info("Searching original URL by the shorten URL.");
-            return linkRepository.findByShortUrl(hostname + "/r/" + shortUrl).orElseThrow(() -> new OriginalUrlException("URL not found in repository"));
+            log.info("Searching original URL by the shorten URL: {}", shortUrl);
+            return linkRepositoryPort.findByShortUrl(shortUrl).orElseThrow(() -> new OriginalUrlException("URL not found in repository"));
         } catch (OriginalUrlException exception) {
             throw new OriginalUrlException("URL not found");
         }
     }
 
     public byte[] getQRCodeImage(UUID id) {
-        Link link = linkRepository.findById(id).orElseThrow(() -> new RuntimeException("Link not found"));
+        Link link = linkRepositoryPort.findById(id).orElseThrow(() -> new RuntimeException("Link not found"));
         link.setQRCode(qrCodeService.generateQRCode(link.getShortUrl()));
+        linkRepositoryPort.save(link);
         return link.getQRCode();
     }
 
     public Link updateLink(Link link) {
-        return linkRepository.save(link);
+        return linkRepositoryPort.save(link);
     }
 
     public Link getOriginalUrlByAlias(String alias) {
         try {
             log.info("Searching original URL by the custom alias.");
-            return linkRepository.findByAlias(alias);
+            return linkRepositoryPort.findByAlias(alias).orElseThrow(() -> new OriginalUrlException("URL not found in repository"));
         } catch (OriginalUrlException exception) {
             throw new OriginalUrlException("URL not found");
         }

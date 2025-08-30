@@ -1,6 +1,6 @@
 package dev.vinicius.EncurtaURL.domain.model.Role;
 
-import dev.vinicius.EncurtaURL.domain.model.Enum.RoleName;
+import dev.vinicius.EncurtaURL.domain.model.enums.RoleName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

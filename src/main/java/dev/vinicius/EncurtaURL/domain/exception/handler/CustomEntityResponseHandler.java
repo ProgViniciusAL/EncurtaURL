@@ -2,6 +2,7 @@ package dev.vinicius.EncurtaURL.domain.exception.handler;
 
 import dev.vinicius.EncurtaURL.domain.exception.InvalidUrlException;
 import dev.vinicius.EncurtaURL.domain.exception.QRCodeGenerateException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
@@ -13,7 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.security.sasl.AuthenticationException;
 
 @RestControllerAdvice
-public class CustomEntityResponseEntity extends ResponseEntityExceptionHandler {
+public class CustomEntityResponseHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<ProblemDetail> handleAllExceptions(Exception ex) {
@@ -47,6 +48,15 @@ public class CustomEntityResponseEntity extends ResponseEntityExceptionHandler {
         ProblemDetail problemDetails = ProblemDetail.forStatus(HttpStatus.UNAUTHORIZED);
         problemDetails.setTitle("Authentication error");
         problemDetails.setDetail(ex.getMessage());
+
+        return new ResponseEntity<>(problemDetails, HttpStatusCode.valueOf(problemDetails.getStatus()));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ProblemDetail> handleConstraintViolationException(ConstraintViolationException ex) {
+        ProblemDetail problemDetails = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problemDetails.setTitle("Constraint violation");
+        problemDetails.setDetail(ex.getConstraintViolations().iterator().next().getMessage());
 
         return new ResponseEntity<>(problemDetails, HttpStatusCode.valueOf(problemDetails.getStatus()));
     }

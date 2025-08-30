@@ -2,7 +2,7 @@ package dev.vinicius.EncurtaURL.application.service;
 
 import dev.vinicius.EncurtaURL.domain.model.User.User;
 import dev.vinicius.EncurtaURL.domain.model.User.dto.UserRequestDTO;
-import dev.vinicius.EncurtaURL.adapter.out.repository.UserRepository;
+import dev.vinicius.EncurtaURL.adapter.out.repository.SpringDataUserRepository;
 import dev.vinicius.EncurtaURL.adapter.out.security.jwt.JwtTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private SpringDataUserRepository springDataUserRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -30,7 +30,7 @@ public class UserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = authentication.getPrincipal() != null ? (User) authentication.getPrincipal() : null;
         if(currentUser != null) {
-            return userRepository.findById(currentUser.getId()).orElse(null);
+            return springDataUserRepository.findById(currentUser.getId()).orElse(null);
         }
         return null;
 
@@ -38,10 +38,10 @@ public class UserService {
 
     public User createUser(UserRequestDTO userDTO) {
 
-        if(!userRepository.findByUsername(userDTO.username()).isPresent()) {
+        if(!springDataUserRepository.findByUsername(userDTO.username()).isPresent()) {
             User user = new User(userDTO, passwordEncoder);
             jwtTokenService.generateToken(user.getEmail());
-            return userRepository.save(user);
+            return springDataUserRepository.save(user);
         }
 
         throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
